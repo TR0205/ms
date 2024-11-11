@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 
+	// protocol buffersの略
 	pb "gihyo/catalogue/proto/book"
 
 	"google.golang.org/grpc"
@@ -69,7 +70,13 @@ func main() {
 	}
 	s := grpc.NewServer()
 	pb.RegisterCatalogueServer(s, &server{})
+	// リフレクションサービスの登録(gRPCurlを使用する際、gRPCサーバーがどのようなサービスやメソッドを公開しているか知ることができる)
+	// 例：$ grpcurl -plaintext localhost:50051 list
+	// book.Catalogue
+	// grpc.reflection.v1.ServerReflection
+	// grpc.reflection.v1alpha.ServerReflection
 	reflection.Register(s)
+
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
