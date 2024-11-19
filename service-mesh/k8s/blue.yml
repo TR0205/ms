@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: blue
+spec:
+  selector:
+    app: blue
+  ports:
+  - name: tcp
+    protocol: TCP
+    port: 80
+    targetPort: 80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue
+  labels:
+    app: blue
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blue
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: blue
+        version: v1
+    spec:
+      containers:
+      - name: blue
+        image: registry.gitlab.com/gihyo-ms-dev-book/handson/sec3/3.1-bookshop-sample/blue
+        ports:
+        - containerPort: 80
